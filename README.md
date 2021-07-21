@@ -1,5 +1,7 @@
 # Triangle-Counting
 
+Pull Request
+
 ## Introduzione
 Lo scopo di questo progetto è di formulare un algoritmo che, dato un grafo restituisce il numero q<sub>3</sub> di 3-cliques esistenti al suo interno. Facciamo riferimento all'articolo "*Clique Counting in MapReduce: Algorithms and Experiments*", limitatamente al caso k=3 , e implementiamo secondo il paradigma *Map-Reduce* lo pseudocodice dell'algoritmo. Il codice è stato scritto con *Java* e *Spark* e viene utilizzato come strumento di supporto il database NoSQL *Neo4J*.
 
