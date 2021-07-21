@@ -84,8 +84,8 @@ Dopo aver creato il grafo su Neo4j, abbiamo eseguito i seguenti passaggi:
 
 | Passaggio        | Descrizione           |
 |:---------- |:------------- |
-| `Calcolo di:(NODO;GRADO)` | Abbiamo eseguito una query per assegnare come attributo ad ogni nodo del grafo il relativo grado. Questa operazione è stata ottimizzata utilizzando il comando `node.degree()` della libreria `apoc`. | 
-| `Calcolo di:(ARCO,GRADI)` | Per esportare la lista in cui il generico elemento è del tipo {u, v, d(u), d(v)}, abbiamo dato come argomento del comando `export.csv.query()` della libreria `apoc` la query che permette di ottenere questo oggetto. Il file `ArcoGradi.csv` risultante sarà l'input del codice contenuto nel file `ContaTriangoli_NeoSpark.java`(per permetterne il caricamento su GitHub è stato suddiviso nei due file `ArcoGradi_pt1.txt` e `ArcoGradi_pt2.txt`).|
+| `Calcolo di:(NODO;GRADO)` | Abbiamo eseguito una query che assegna come attributo ad ogni nodo del grafo il relativo grado. Questa operazione è stata ottimizzata utilizzando il comando `node.degree()` della libreria `apoc`. | 
+| `Calcolo di:(ARCO,GRADI)` | Per esportare la lista in cui il generico elemento è del tipo {u, v, d(u), d(v)}, abbiamo utilizzato il comando `export.csv.query()` della libreria `apoc` in cui come argomento è richiesta la query che permette di ottenere questo oggetto. Il file `ArcoGradi.csv` risultante sarà l'input del codice contenuto nel file `ContaTriangoli_NeoSpark.java`.|
 
 
 ## Implementazione dell'algoritmo con Java e Spark
