@@ -111,7 +111,7 @@ Per fare ciò abbiamo implementato due cicli `for`:
 Abbiamo dunque salvato nell'oggetto `dMap2_1` tutte le coppie di nodi di Gamma + (u) - ottenuti scalando le posizioni correnti rispetto ai cicli `for` di un'unità- che soddisfavano la condizione x<sub>i</sub> &pr; x<sub>j</sub>. Abbiamo dunque ottenuto l'output richiesto dal Map 2, ovvero (x<sub>i</sub>,x<sub>j</sub>);u).
 
   
-**Reduce 2**: Abbiamo creato l'oggetto `dReduce2_0` utilizzando una `reduceByKey` grazie alla quale abbiamo selezionato tutte le coppie del passo precedente che avevano la stessa chiave, aggregandone i valori. Successivamente, abbiamo eseguito un `join` tra l'oggetto appena creato e il primo output di **Map 2* contenuto nell'oggetto `dMap2_0`, creando la `JavaPairRDD` `dReduce2_1`. In questo modo, abbiamo selezionato gli elementi di &Gamma;<sup>+</sup>(u) che erano collegati da un arco.
+**Reduce 2**: Abbiamo creato l'oggetto `dReduce2_0` utilizzando una `reduceByKey` grazie alla quale abbiamo selezionato tutte le coppie del passo precedente che avevano la stessa chiave, aggregandone i valori. Successivamente, abbiamo eseguito un `join` tra l'oggetto appena creato e il primo output di *Map 2**contenuto nell'oggetto `dMap2_0`, creando la `JavaPairRDD` `dReduce2_1`. In questo modo, abbiamo selezionato gli elementi di &Gamma;<sup>+</sup>(u) che erano collegati da un arco.
 
 **ROUND 3** 
 
