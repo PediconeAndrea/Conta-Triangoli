@@ -108,7 +108,7 @@ Per fare ciò abbiamo implementato due cicli `for`:
 - il primo parte da i=2 e viene incrementato a ogni iterazione in modo da scorrere lungo i numeri del valore della tupla posti in posizione pari. In questo modo siamo riusciti a selezionare i gradi di ogni nodo in quanto situati alla destra dell'etichetta di ognuno di essi. 
 - il secondo parte da j=i+2 e procede nello stesso modo. 
 
-Abbiamo dunque salvato nell'oggetto `dMap2_1` tutte le coppie di nodi di Gamma + (u) - ottenuti scalando le posizioni correnti rispetto ai cicli `for` di un'unità- che soddisfavano la condizione x<sub>i</sub> &pr; x<sub>j</sub>. Abbiamo dunque ottenuto l'output richiesto dal Map 2, ovvero (x<sub>i</sub>,x<sub>j</sub>);u).
+Abbiamo dunque salvato nell'oggetto `dMap2_1` tutte le coppie di nodi di &Gamma;<sup>+</sup>(u)| - ottenuti scalando le posizioni correnti rispetto ai cicli `for` di un'unità- che soddisfavano la condizione x<sub>i</sub> &pr; x<sub>j</sub>. Abbiamo dunque ottenuto l'output richiesto dal Map 2, ovvero (x<sub>i</sub>,x<sub>j</sub>);u).
 
   
 **Reduce 2**: Abbiamo creato l'oggetto `dReduce2_0` utilizzando una `reduceByKey` grazie alla quale abbiamo selezionato tutte le coppie del passo precedente che avevano la stessa chiave, aggregandone i valori. Successivamente, abbiamo eseguito un `join` tra l'oggetto appena creato e il primo output di *Map 2**contenuto nell'oggetto `dMap2_0`, creando la `JavaPairRDD` `dReduce2_1`. In questo modo, abbiamo selezionato gli elementi di &Gamma;<sup>+</sup>(u) che erano collegati da un arco.
