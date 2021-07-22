@@ -63,7 +63,7 @@ JavaRDD<String> dGrafo1 = jsc.parallelize(Grafo);
 dGrafo1.saveAsTextFile("GowallaArchi");
 ```
 
-Una volta ottenuti i file `GowallaNodi.txt` e `GowallaArchi.txt`, li abbiamo trasformati in file `.csv` e utilizzando la libreria `apoc` di Neo4j li abbiamo caricati sul software.
+Una volta ottenuti i file `GowallaNodi.txt` e `GowallaArchi.txt`, li abbiamo trasformati in file `.csv` e utilizzando la libreria `apoc` di *Neo4j* li abbiamo caricati sul software.
 
 ## Due strade alternative 
 
