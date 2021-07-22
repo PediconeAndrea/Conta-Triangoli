@@ -25,7 +25,7 @@ Nella cartella Github si trovano i seguenti file/classi:
 |:---------- |:------------- |
 | `Arco.java` | classe *wrapper* utilizzata per la preparazione dell'input per l'applicazione |
 | `ContaTriangoli.java` | classe main dell'applicazione che lavora esclusivamente con *Spark* |
-| `ContaTriangoli_NeoSpark.java` | classe main dell'applicazione che lavora congiuntamrnte con *Spark* e *Neo4j* |
+| `ContaTriangoli_NeoSpark.java` | classe main dell'applicazione che lavora congiuntamente con *Spark* e *Neo4j* |
 | `Map2.java` | interfaccia che implementa Map2 |
 | `Map3.java` | interfaccia che implementa Map3 |
 | `Card.java` | interfaccia che conta coppie di valori |
