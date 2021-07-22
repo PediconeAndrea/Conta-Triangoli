@@ -90,29 +90,29 @@ public class ContaTriangoli {
 		
 		//match(u) set u.grado = apoc.node.degree(u)
 	    		
-		int nodoProva = 147;
+		//int nodoProva = 147;
 
-		JavaPairRDD<String, String> dVerifica0 = dGrafo.mapToPair(x -> new Tuple2<String, String>(x.split(",")[0], x.split(",")[1])).reduceByKey((x, y) -> x + "," + y).filter(x -> Integer.parseInt(x._1) == nodoProva);
+		//JavaPairRDD<String, String> dVerifica0 = dGrafo.mapToPair(x -> new Tuple2<String, String>(x.split(",")[0], x.split(",")[1])).reduceByKey((x, y) -> x + "," + y).filter(x -> Integer.parseInt(x._1) == nodoProva);
 		
-		JavaPairRDD<String, String> dVerifica1 = dGrado.filter(x -> Integer.parseInt(x._1) == nodoProva);
+		//JavaPairRDD<String, String> dVerifica1 = dGrado.filter(x -> Integer.parseInt(x._1) == nodoProva);
 		
-		System.out.println(dVerifica0.collect());
+		//System.out.println(dVerifica0.collect());
 		
-		System.out.println(dVerifica1.collect());
+		//System.out.println(dVerifica1.collect());
 		
 		//match (u:nodo) where u.id = 147 return u.id,u.grado
 				
 		//match (u:nodo)-[:vicino]-(v:nodo) where u.id = 147 return u,v
 
-		JavaPairRDD<String, String> dVerifica2 = dMap1_2.mapToPair(x -> new Tuple2<String, String>(x.split(",")[0], x.split(",")[1])).reduceByKey((x, y) -> x + "," + y).filter(x -> Integer.parseInt(x._1) == nodoProva);
+		//JavaPairRDD<String, String> dVerifica2 = dMap1_2.mapToPair(x -> new Tuple2<String, String>(x.split(",")[0], x.split(",")[1])).reduceByKey((x, y) -> x + "," + y).filter(x -> Integer.parseInt(x._1) == nodoProva);
 		
-		System.out.println(dVerifica2.collect());
+		//System.out.println(dVerifica2.collect());
 		
 		//match (u:nodo)-[:vicino]-(v:nodo) where u.id = 147 match (u:nodo)-[:vicino]-(v:nodo) where u.grado < v.grado or (u.grado = v.grado and u.id < v.id) return u,v
 
-		JavaPairRDD<String, String> dVerifica3 = dReduce3_0.filter(x -> Integer.parseInt(x._1) == nodoProva);
+		//JavaPairRDD<String, String> dVerifica3 = dReduce3_0.filter(x -> Integer.parseInt(x._1) == nodoProva);
 		
-		System.out.println(dVerifica3.collect());
+		//System.out.println(dVerifica3.collect());
 		
 		//match (v:nodo)-[:vicino]-(u:nodo)-[:vicino]-(w:nodo) where u.id = 147 match (v:nodo)-[:vicino]-(w:nodo) return u,v,w
 
