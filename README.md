@@ -117,3 +117,16 @@ Abbiamo poi salvato nell'oggetto `dMap2_1` tutte le coppie di nodi di &Gamma;<su
 
 **Reduce 3**: Eseguendo una `reduceByKey` sull'output appena ottenuto, abbiamo costruito, per ogni chiave data in input, l'insieme contenente gli archi di G<sup>+</sup>(u). Poi, utilizzando nuovamente l'interfaccia `Card.java`, abbiamo contato il numero di archi in esso contenuti. In conclusione, mediante un'ulteriore `reduceByKey` che ha sommato i valori delle tuple aggregate per chiave, abbiamo ottenuto il numero di triangoli presenti nel grafo.
 
+
+
+## Interrogazione del grafo su *Neo4j*
+
+Facendo riferimento all'applicazione `ContaTriangoli.java`, abbiamo creato il grafo su *Neo4j* nello stesso modo in cui è stato fatto inizialmente per l'applicazione `ContaTriangoli_NeoSpark.java`. 
+Collegandoci al software *Neo4j*, e focalizzandoci su un particolare nodo di prova, abbiamo eseguito delle query che mostrassero a schermo i seguenti oggetti richiamati dall'algoritmo:
+* grado del nodo e insieme dei nodi ad esso collegati 
+* insieme &Gamma;<sup>+</sup>(u) per il nodo di riferimento
+* tutti i nodi che formano dei triangoli con il nodo di riferimento
+* triangoli contati dal nodo di riferimento
+	 
+Simultaneamente abbiamo verificato gli output delle query di *Neo4j* attraverso operazioni di `filter` con *Spark*.
+		
