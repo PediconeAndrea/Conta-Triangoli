@@ -1,30 +1,28 @@
-# Conta-Triangoli
+# Clique-Counting
 
-## Introduzione
-Lo scopo di questo progetto è di formulare un algoritmo che, dato un grafo, restituisce il numero q<sub>3</sub> di 3-cliques esistenti al suo interno. Facciamo riferimento all'articolo *"Clique Counting in MapReduce: Algorithms and Experiments"*, limitatamente al caso k=3 , e implementiamo secondo il paradigma Map-Reduce lo pseudocodice dell'algoritmo. Il codice è stato scritto con *Java* e *Spark* ed è stato utilizzato come strumento di supporto il database NoSQL *Neo4j*.
-
-
-## Il dataset  
-Dove trovarlo: https://snap.stanford.edu/data/loc-Gowalla.html  
-Il grafo modella una struttura dati con relazioni indirette, e ha 196591 nodi, 950327 archi e 2273138 triangoli. Il sito rende disponibile il grafo diretto -quindi possiede 1900654 archi- e i nodi di ogni arco sono separati da uno spazio.
+## Introduction
+The aim of this project is to develop an algorithm that, given a graph, computes q<sub>3</sub>, the number of 3-cliques. We refer to the paper by Finocchi, I., Marco F., and Fusco E.G., "Clique counting in mapreduce: Algorithms and experiments." Journal of Experimental Algorithmics (JEA) 20 (2015): 1-20. We implemented the pseudocode of the algorithm following the MapReduce paradigm. The code was written in Java using Apache Spark, and we employed the NoSQL database *Neo4j*.
 
 
+## Dataset
+Where it can be found: https://snap.stanford.edu/data/loc-Gowalla.html  
+The graph models a data structure having indirect relationship. It contains 196591 nodes, 950327 edges and 2273138 triangles. The dataset provider makes available the indirect version of the graph, which includes 1900654 edges. In the data file, each edge is represented by a pair of nodes separated by a tab character.
 
 ## Presentazione dei file
-Nella cartella Github si trovano i seguenti file/classi:  
+The GitHub folder contains the following files and classes:
 
 | File        | Descrizione           |
 |:---------- |:------------- |
-| `GowallaNodi.csv` | file contenente i nodi del grafo |
-| `GowallaArchi.csv` | file contenente gli archi del grafo -indiretto- |
-| `Gowalla.txt` | file contenente gli archi del grafo diretto  |
-| `ArcoGradiGowalla_pt1.txt` | prima suddivisione del file contenente gli archi e i gradi dei rispettivi nodi  |
-| `ArcoGradiGowalla_pt2.txt` | seconda suddivisione del file contenente gli archi e i gradi dei rispettivi nodi |
+| `GowallaNodi.csv` | file containing the graph's nodes|
+| `GowallaArchi.csv` | file containing the graph's edges -indirect-|
+| `Gowalla.txt` | file containing the graph's edges -direct-  |
+| `ArcoGradiGowalla_pt1.txt` | first division of file containing edges and grades of the corresponding nodes|
+| `ArcoGradiGowalla_pt2.txt` | second division of file containing edges and grades of the corresponding nodes|
 
 | Classe        | Descrizione           |
 |:---------- |:------------- |
-| `Arco.java` | classe *wrapper* utilizzata per la preparazione dell'input per l'applicazione |
-| `ContaTriangoli.java` | classe main dell'applicazione che lavora esclusivamente con *Spark* |
+| `Arco.java` | *wrapper* class used to prepare application's input|
+| `ContaTriangoli.java` | main class of the application that works only with *Spark*|
 | `ContaTriangoli_NeoSpark.java` | classe main dell'applicazione che lavora congiuntamente con *Spark* e *Neo4j* |
 | `Map2.java` | interfaccia che implementa Map2 |
 | `Map3.java` | interfaccia che implementa Map3 |
