@@ -1,7 +1,7 @@
 # Clique-Counting
 
 ## Introduction
-The aim of this project is to develop an algorithm that, given a graph, computes q<sub>3</sub>, the number of 3-cliques. We refer to the paper by Finocchi, I., Marco F., and Fusco E.G., "Clique counting in mapreduce: Algorithms and experiments." Journal of Experimental Algorithmics (JEA) 20 (2015): 1-20. We implemented the pseudocode of the algorithm following the MapReduce paradigm. The code was written in Java using Apache Spark, and we employed the NoSQL database *Neo4j*.
+The aim of this project is to develop an algorithm that, given a graph, computes q<sub>3</sub>, the number of 3-cliques. We refer to the paper by Finocchi, I., Marco F., and Fusco E.G., "Clique counting in mapreduce: Algorithms and experiments." Journal of Experimental Algorithmics (JEA) 20 (2015): 1-20. We implemented the pseudocode of the algorithm following the MapReduce paradigm. The code was written in *Java* using *Spark*, and we employed the NoSQL database *Neo4j*.
 
 
 ## Dataset
