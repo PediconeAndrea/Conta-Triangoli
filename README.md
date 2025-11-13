@@ -71,12 +71,12 @@ In order to do this, we need the following steps:
 
 | Passaggio        | Descrizione           |
 |:---------- |:------------- |
-| `Calcolo di:(NODO,GRADO)` | Al grafo diretto abbiamo applicato una funzione lambda che restituisce un oggetto in cui in chiave si trova il nodo in entrata, e in valore l'intero 1; successivamente, mediante una `reduceByKey`, abbiamo ottenuto una lista di tuple aventi in chiave un nodo, e in valore il suo grado; per semplicità, abbiamo poi convertito quest'ultima in una lista di stringhe. |
-| `Calcolo di:(ARCO,GRADI)` | Abbiamo poi creato due liste di tuple differenti aventi entrambe come chiave l'arco, e come valore rispettivamente il grado del nodo in entrata e il grado del nodo in uscita. Con un `join`, intersecando per chiave le due liste, abbiamo ottenuto una lista di tuple aventi come chiave l'arco, e come valore i gradi dei relativi nodi. Sempre per comodità, abbiamo poi convertito questo oggetto in una lista di stringhe. |
+| `Computing :(Node,Degree)` | We applied a lambda function to the directed graph that returns an object containing the incoming node and the value 1. Then, using a `reduceByKey`, we obtained a list of tuples where each key represents a node and each value corresponds to its in-degree. For simplicity, we converted this list into a list of strings. |
+| `Computing di:(Edge,Degrees)` | Then, we created two different lists of tuples, both using the edge as the key: one associates each edge with its in-degree, and the other with its out-degree. Using a `join`, operation to intersect the two lists by key, we obtained a single list of tuples where each key represents an edge and the associated value is the corresponding degree. As before, we converted this resulting object into a list of strings for simplicity. |
 
 
-2. *Preparazione dell'input con *Neo4j**:
-Dopo aver creato il grafo su Neo4j, abbiamo eseguito i seguenti passaggi: 
+2. *Preparing the input with *Neo4j**:
+After having created the graph on *Neo4j*, we performed the following steps: 
 
 | Passaggio        | Descrizione           |
 |:---------- |:------------- |
