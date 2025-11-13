@@ -72,7 +72,7 @@ In order to do this, we need the following steps:
 | Passaggio        | Descrizione           |
 |:---------- |:------------- |
 | `Computing :(Node,Degree)` | We applied a lambda function to the directed graph that returns an object containing the incoming node and the value 1. Then, using a `reduceByKey`, we obtained a list of tuples where each key represents a node and each value corresponds to its in-degree. For simplicity, we converted this list into a list of strings. |
-| `Computing di:(Edge,Degrees)` | Then, we created two different lists of tuples, both using the edge as the key: one associates each edge with its in-degree, and the other with its out-degree. Using a `join`, operation to intersect the two lists by key, we obtained a single list of tuples where each key represents an edge and the associated value is the corresponding degree. As before, we converted this resulting object into a list of strings for simplicity. |
+| `Computing di:(Edge,Degrees)` | Then, we created two different lists of tuples, both using the edge as the key: one associates each edge with its in-degree, and the other with its out-degree. Using a `join`, operation to intersect the two lists by key, we obtained a single list of tuples where each key represents an edge and the associated value is the corresponding in-degree and out-degree. As before, we converted this resulting object into a list of strings for simplicity. |
 
 
 2. *Preparing the input with *Neo4j**:
@@ -80,49 +80,52 @@ After having created the graph on *Neo4j*, we performed the following steps:
 
 | Passaggio        | Descrizione           |
 |:---------- |:------------- |
-| `Calcolo di:(NODO,GRADO)` | Abbiamo eseguito una query che assegna come attributo ad ogni nodo del grafo il relativo grado. Questa operazione è stata ottimizzata utilizzando il comando `node.degree()` della libreria `apoc`. | 
-| `Calcolo di:(ARCO,GRADI)` | Per esportare la lista in cui il generico elemento è del tipo {u, v, d(u), d(v)}, abbiamo utilizzato il comando `export.csv.query()` della libreria `apoc` in cui come argomento è richiesta la query che permette di ottenere questo oggetto. Il file risultante è del tipo `.csv`, ma per fornirlo in input all'applicazione `ContaTriangoli_NeoSpark.java`, l'abbiamo convertito nel file `ArcoGradi.txt`, che nella cartella Github è presente suddiviso in due file. 
+| `Computing :(Node,Degree)` | We executed a query that assigns the corresponding degree as an attribute to each node. This operation was optimized by using the `node.degree()` command of the `apoc` library. | 
+| `Computing :(Edge,Degrees)` | To obtain the list in which the generic element is of the form {u, v, d(u), d(v)}, we used the `export.csv.query()` function of the `apoc` library, passing as an argument the query that generates this structure. The resulting file is of the `.csv` form. However, in order to use this file as input for the `ContaTriangoli_NeoSpark.java` application, we converted it into `ArcoGradi.txt`. In the GitHub repository, this file is split into two separate components.
 
-## Implementazione dell'algoritmo con Java e Spark
-L'algoritmo è diviso in tre round MapReduce:
+## Implementing the algorithm with Java and Spark
+The algorithm is divided into three Mapreduce rounds
 
 **ROUND 1**
 
-**Map 1**: Data in input la lista di stringhe contenente ogni arco con accanto i gradi dei relativi nodi, con un'operazione di `filter` abbiamo selezionato gli archi aventi grado del nodo in entrata strettamente minore del grado del nodo in uscita e abbiamo salvato questo oggetto nella `JavaRDD` di stringhe `dMap1_0`.
-Successivamente, con una seconda operazione di `filter`, abbiamo selezionato gli archi aventi grado del nodo in entrata uguale al grado del nodo in uscita e abbiamo eseguito un ulteriore `filter` che ha selezionato, di questi, solamente quelli che possedevano etichetta numerica del nodo in entrata inferiore a quella del nodo in uscita; abbiamo poi salvato questo oggetto nella `JavaRDD` di stringhe `dMap1_1`. Abbiamo poi unito i due oggetti per ottenere tutti gli archi (u,v) tali che u &pr; v. Con lo scopo di ottenere &Gamma;<sup>+</sup>(u), abbiamo infine eseguito una `reduceByKey` sull'output precedente: questo ci ha restituito la `JavaPairRDD`  `dGammaPiu`, in cui la generica coppia chiave-valore è del tipo (u; v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>,d(v<sub>2</sub>),...), ovvero l'oggetto avente come chiave il nodo, e come valore l'insieme &Gamma;<sup>+</sup>(u), con in aggiunta l'informazione circa il grado dei nodi in esso contenuti; questa scelta è stata fatta per permettere l'implementazione dei passi successivi.
+**Map 1**: Given as input the list of strings containing each edge with the degrees of the corresponding nodes, we used a 'filter' operation to select those edges whose in-degree is strictly less than the out-degree. We then saved this object into the 'JavaRDD' of strings called 'dMap1_0'. Next, with a second 'filter' operation, we selected the edges whose in-degree equals the out-degree, and applied another 'filter' to retain only those where the in-edge's label is less than the out-edge's label. This result was saved into the 'JavaRDD' of strings 'dMap1_1'. We then merged the two objects to obtain all edges (u,v) such that u &pr; v. In order to compute &Gamma;<sup>+</sup>(u), we finally performed a 'reduceByKey' on the previous output: this returned the 'JavaPairRDD' 'dGammaPiu', where each generic key-value pair is of the form (u; v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...), that is, an object with the node as key and the set &Gamma;<sup>+</sup>(u) as value, enriched with the degree information of the nodes it contains. This choice was made to support the implementation of the following steps.
 
 
-**Reduce 1**: Abbiamo utilizzato l'interfaccia `Card.java` sull'output del passo precedente: questa conta il numero di termini separati da virgole all'interno del valore di ogni chiave e successivamente divide questo numero per 2. In questo modo siamo riusciti ad ottenere la coppia `JavaPairRDD<String, Integer>` avente come chiave il nodo e come valore la cardinalità del relativo insieme &Gamma;<sup>+</sup>(u). Poi, con un'operazione di `filter`, abbiamo selezionato solamente le coppie che avevano cardinalità maggiore o uguale a 2, e abbiamo salvato questo oggetto nella variabile `dReduce1_0`. Per ottenere l'output del *Reduce 1*, che abbiamo salvato nell'oggetto `dReduce1_1`,  abbiamo infine eseguito un `join` tra l'oggetto appena creato e `dGammaPiu`; il risultato è stato poi convertito in una `JavaRDD` di stringhe e privato dell'informazione circa la cardinalità di &Gamma;<sup>+</sup>(u). Abbiamo in questo modo ottenuto un oggetto avente come generico elemento (u, v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>,d(v<sub>2</sub>),...).
+**Reduce 1**: We used the interface 'Card.java' on the output of the previous step: this counts the number of comma-separated terms within the value of each key and then divides that number by 2. In this way, we obtained the pair 'JavaPairRDD<String, Integer>' where the key is the node and the value is the cardinality of the corresponding set &Gamma;<sup>+</sup>(u). Then, with a 'filter' operation, we selected only the pairs whose cardinality was greater than or equal to 2, and we saved this object in the variable 'dReduce1_0'. To obtain the output of Reduce 1, which we stored in the object 'dReduce1_1', we finally performed a 'join' between the newly created object and 'dGammaPiu'; the result was then converted into a 'JavaRDD' of strings and stripped of the information regarding the cardinality of &Gamma;<sup>+</sup>(u). In this way, we obtained an object whose generic element is of the form (u, v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...).
 
 **ROUND 2**
 
-**Map 2**: Per il primo input, abbiamo utilizzato l'output del *Map 1* e abbiamo creato la `JavaPairRDD` `dMap2_0` avente in chiave l'arco e in valore il simbolo "$".
-Per il secondo input, abbiamo utilizzato l'interfaccia `Map2.java`.  Avendo mantenuto l'informazione riguardo i gradi dei nodi appartenenti a &Gamma;<sup>+</sup>(u), siamo riusciti a confrontarli. 
-Per fare ciò, abbiamo implementato due cicli `for`:
-- il primo parte da i=2 e viene incrementato a ogni iterazione in modo da scorrere lungo i numeri del valore della tupla posti in posizione pari. In questo modo abbiamo selezionato i gradi di ogni nodo in quanto situati alla destra dell'etichetta di ognuno di essi. 
-- il secondo parte da j=i+2 e procede nello stesso modo. 
+**Map 2**: For the first input, we used the output of Map 1 and created the 'JavaPairRDD' 'dMap2_0', where the key is the edge and the value is the symbol "$". For the second input, we used the interface 'Map2.java'. Since we retained the information about the degrees of the nodes belonging to &Gamma;<sup>+</sup>(u), we were able to compare them. To do this, we implemented two 'for' loops:
+-The first starts from i=2 and is incremented at each iteration to scan through the even-numbered positions in the tuple's value. In this way, we selected the degrees of each node, as they are located to the right of each node's label.
+-The second starts from j=i+2 and proceeds in the same manner.
 
-Abbiamo poi salvato nell'oggetto `dMap2_1` tutte le coppie di nodi di &Gamma;<sup>+</sup>(u) - ottenuti scalando le posizioni correnti rispetto ai cicli `for` di un'unità- che soddisfavano la condizione x<sub>i</sub> &pr; x<sub>j</sub>. Abbiamo dunque ottenuto l'output richiesto dal Map 2, ovvero (x<sub>i</sub>,x<sub>j</sub>);u).
-
+We then saved in the object 'dMap2_1' all pairs of nodes from &Gamma;<sup>+</sup>(u) — obtained by shifting the current positions in the 'for' loops by one unit — that satisfied the condition x<sub>i</sub> &pr; x<sub>j</sub>. Thus, we obtained the output required by Map 2, namely (x<sub>i</sub>, x<sub>j</sub>; u).
   
-**Reduce 2**: Abbiamo creato l'oggetto `dReduce2_0` utilizzando una `reduceByKey` grazie alla quale abbiamo selezionato tutte le coppie del passo precedente che avevano la stessa chiave, aggregandone i valori. Successivamente, abbiamo eseguito un `join` tra l'oggetto appena creato e il primo output di *Map 2* contenuto nell'oggetto `dMap2_0`, creando la `JavaPairRDD` `dReduce2_1`. In questo modo, abbiamo selezionato gli elementi di &Gamma;<sup>+</sup>(u) che erano collegati da un arco.
+**Reduce 2**: We created the object 'dReduce2_0' using a 'reduceByKey', through which we selected all the pairs from the previous step that shared the same key, aggregating their values. Next, we performed a 'join' between the newly created object and the first output of Map 2, contained in the object 'dMap2_0', resulting in the 'JavaPairRDD' 'dReduce2_1'. In this way, we selected the elements of &Gamma;<sup>+</sup>(u) that were connected by an edge.
 
 **ROUND 3** 
 
-**Map 3**: Abbiamo utilizzato l'interfaccia `Map3.java` su `dReduce2_1`: per ogni nodo presente nel valore della tupla, abbiamo generato una nuova coppia avente come chiave il nodo, e come valore la chiave della tupla precedente.
+**Map 3**: We used the interface 'Map3.java' on 'dReduce2_1': for each node present in the value of the tuple, we generated a new pair where the key is the node and the value is the key of the previous tuple.
 
-**Reduce 3**: Eseguendo una `reduceByKey` sull'output appena ottenuto, abbiamo costruito, per ogni chiave data in input, l'insieme contenente gli archi di G<sup>+</sup>(u). Poi, utilizzando nuovamente l'interfaccia `Card.java`, abbiamo contato il numero di archi in esso contenuti. In conclusione, mediante un'ulteriore `reduceByKey` che ha sommato i valori delle tuple aggregate per chiave, abbiamo ottenuto il numero di triangoli presenti nel grafo.
-
+**Reduce 3**: By performing a 'reduceByKey' on the previously obtained output, we constructed, for each input key, the set containing the edges of G<sup>+</sup>(u). Then, using the interface 'Card.java' again, we counted the number of edges contained in each set. Finally, through an additional 'reduceByKey' that summed the values of the tuples aggregated by key, we obtained the total number of triangles present in the graph.
 
 
 ## Interrogazione del grafo su *Neo4j*
 
-Facendo riferimento all'applicazione `ContaTriangoli.java`, abbiamo creato il grafo su *Neo4j* nello stesso modo in cui è stato fatto inizialmente per l'applicazione `ContaTriangoli_NeoSpark.java`. 
-Collegandoci al software *Neo4j*, e focalizzandoci su un particolare nodo di prova, abbiamo eseguito delle query che mostrassero a schermo i seguenti oggetti richiamati dall'algoritmo:
-* grado del nodo e insieme dei nodi ad esso collegati 
-* insieme &Gamma;<sup>+</sup>(u) per il nodo di riferimento
-* tutti i nodi che formano dei triangoli con il nodo di riferimento
-* triangoli contati dal nodo di riferimento
+Referring to the 'ContaTriangoli.java' application, we created the graph on Neo4j in the same way it was initially built for the 'ContaTriangoli_NeoSpark.java' application. By connecting to Neo4j and focusing on a specific test node, we executed queries that displayed the following elements retrieved by the algorithm:
+* the degree of the node and the set of nodes connected to it
+* the set &Gamma;<sup>+</sup>(u) for the reference node
+* all nodes forming triangles with the reference node
+* triangles counted from the reference node
 	 
-Simultaneamente abbiamo verificato gli output delle query di *Neo4j* attraverso operazioni di `filter` con *Spark*.
+At the same time, we verified the outputs of the Neo4j queries using 'filter' operations with Spark.
+
+Let me know if you'd like to continue with the next section or compile everything into a cohesive document!
+
+the dots of the enumeration
+Got it! Here's the corrected English translation with bullet points using dots (•) instead of asterisks, as you requested:
+
+Referring to the 'ContaTriangoli.java' application, we created the graph on Neo4j in the same way it was initially built for the 'ContaTriangoli_NeoSpark.java' application. By connecting to Neo4j and focusing on a specific test node, we executed queries that displayed the following elements retrieved by the algorithm: • the degree of the node and the set of nodes connected to it • the set &Gamma;<sup>+</sup>(u) for the reference node • all nodes forming triangles with the reference node • triangles counted from the reference node
+
+At the same time, we verified the outputs of the *Neo4j* queries using 'filter' operations with *Spark*.
 		
