@@ -99,7 +99,7 @@ The algorithm is divided into three Mapreduce rounds
 -The first starts from i=2 and is incremented at each iteration to scan through the even-numbered positions in the tuple`s value. In this way, we selected the degrees of each node, as they are located to the right of each node`s label.
 -The second starts from j=i+2 and proceeds in the same manner.
 
-We then saved in the object `dMap2_1` all pairs of nodes from &Gamma;<sup>+</sup>(u) — obtained by shifting the current positions in the `for` loops by one unit — that satisfied the condition x<sub>i</sub> &pr; x<sub>j</sub>. Thus, we obtained the output required by Map 2, namely (x<sub>i</sub>, x<sub>j</sub>; u).
+We then saved in the object `dMap2_1` all pairs of nodes from &Gamma;<sup>+</sup>(u) — obtained by shifting the current positions in the `for` loops by one unit — that satisfied the condition x<sub>i</sub> &pr; x<sub>j</sub>. Thus, we obtained the output required by *Map 2*, namely (x<sub>i</sub>, x<sub>j</sub>; u).
   
 **Reduce 2**: We created the object `dReduce2_0` using a `reduceByKey`, through which we selected all the pairs from the previous step that shared the same key, aggregating their values. Next, we performed a `join` between the newly created object and the first output of *Map 2*, contained in the object `dMap2_0`, resulting in the `JavaPairRDD` `dReduce2_1`. In this way, we selected the elements of &Gamma;<sup>+</sup>(u) that were connected by an edge.
 
