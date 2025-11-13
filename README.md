@@ -13,17 +13,17 @@ The GitHub folder contains the following files and classes:
 
 | File        | Description             |
 |:---------- |:------------- |
-| `GowallaNodi.csv` | file containing the graph's nodes|
-| `GowallaArchi.csv` | file containing the graph's edges -indirect-|
-| `Gowalla.txt` | file containing the graph's edges -direct-  |
+| `GowallaNodi.csv` | file containing the graph`s nodes|
+| `GowallaArchi.csv` | file containing the graph`s edges -indirect-|
+| `Gowalla.txt` | file containing the graph`s edges -direct-  |
 | `ArcoGradiGowalla_pt1.txt` | first division of file containing edges and grades of the corresponding nodes|
 | `ArcoGradiGowalla_pt2.txt` | second division of file containing edges and grades of the corresponding nodes|
 
 | Class        | Description           |
 |:---------- |:------------- |
-| `Arco.java` | *wrapper* class used to prepare application's input|
+| `Arco.java` | *wrapper* class used to prepare application`s input|
 | `ContaTriangoli.java` | main class of the application that works only with *Spark*|
-| `ContaTriangoli_NeoSpark.java` | classe main dell'applicazione che lavora congiuntamente con *Spark* e *Neo4j* |
+| `ContaTriangoli_NeoSpark.java` | classe main dell`applicazione che lavora congiuntamente con *Spark* e *Neo4j* |
 | `Map2.java` | interface implementing Map2 |
 | `Map3.java` | interface implementing Map2 |
 | `Card.java` | interface counting couples of values|
@@ -45,7 +45,7 @@ JavaRDD<String> dNodi = dGrafo.map(x -> new String(x.split(",")[0],1)).reduceByK
 dNodi.saveAsTextFile("GowallaNodi");
 ```
 
-Moreover, we need a file containing the list of edges from the undirected graph. Using the *wrapper* class 'Arco.java', the following code converts the graph from undirected to directed.
+Moreover, we need a file containing the list of edges from the undirected graph. Using the *wrapper* class `Arco.java`, the following code converts the graph from undirected to directed.
  
 ```
 JavaRDD<String> dGrafo = jsc.textFile("data/Gowalla.txt");	
@@ -60,7 +60,7 @@ JavaRDD<String> dGrafo1 = jsc.parallelize(Grafo);
 dGrafo1.saveAsTextFile("GowallaArchi");
 ```
 
-Once the files `GowallaNodi.txt` and `GowallaArchi.txt` are obtained, they are transformed into '.csv' format and uploaded int *Neo4j* by using the 'apoc' library.
+Once the files `GowallaNodi.txt` and `GowallaArchi.txt` are obtained, they are transformed into `.csv` format and uploaded int *Neo4j* by using the `apoc` library.
 
 ## Two possible paths
 We have chosen two strategies that produce distinct inputs for the *Clique Counting*. The first strategy generates the input directly using *Spark*, while the second relies on *Neo4j* to prepare the input for the application. After the algorithm completes, *Neo4j* is used again as a tool to assess the results obtained.
@@ -88,26 +88,26 @@ The algorithm is divided into three Mapreduce rounds
 
 **ROUND 1**
 
-**Map 1**: Given as input the list of strings containing each edge with the degrees of the corresponding nodes, we used a `filter` operation to select those edges whose in-degree is strictly less than the out-degree. We then saved this object into the `JavaRDD` of strings called `dMap1_0`. Next, with a second `filter` operation, we selected the edges whose in-degree equals the out-degree, and applied another `filter` to retain only those where the in-edge's label is less than the out-edge's label. This result was saved into the `JavaRDD` of strings `dMap1_1`. We then merged the two objects to obtain all edges (u,v) such that u &pr; v. In order to compute &Gamma;<sup>+</sup>(u), we finally performed a `reduceByKey` on the previous output: this returned the `JavaPairRDD` `dGammaPiu`, where each generic key-value pair is of the form (u; v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...), that is, an object with the node as key and the set &Gamma;<sup>+</sup>(u) as value, enriched with the degree information of the nodes it contains. This choice was made to support the implementation of the following steps.
+**Map 1**: Given as input the list of strings containing each edge with the degrees of the corresponding nodes, we used a `filter` operation to select those edges whose in-degree is strictly less than the out-degree. We then saved this object into the `JavaRDD` of strings called `dMap1_0`. Next, with a second `filter` operation, we selected the edges whose in-degree equals the out-degree, and applied another `filter` to retain only those where the in-edge`s label is less than the out-edge`s label. This result was saved into the `JavaRDD` of strings `dMap1_1`. We then merged the two objects to obtain all edges (u,v) such that u &pr; v. In order to compute &Gamma;<sup>+</sup>(u), we finally performed a `reduceByKey` on the previous output: this returned the `JavaPairRDD` `dGammaPiu`, where each generic key-value pair is of the form (u; v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...), that is, an object with the node as key and the set &Gamma;<sup>+</sup>(u) as value, enriched with the degree information of the nodes it contains. This choice was made to support the implementation of the following steps.
 
 
-**Reduce 1**: We used the interface `Card.java` on the output of the previous step: this counts the number of comma-separated terms within the value of each key and then divides that number by 2. In this way, we obtained the pair `JavaPairRDD<String, Integer>` where the key is the node and the value is the cardinality of the corresponding set &Gamma;<sup>+</sup>(u). Then, with a `filter` operation, we selected only the pairs whose cardinality was greater than or equal to 2, and we saved this object in the variable `dReduce1_0`. To obtain the output of *Reduce 1*, which we stored in the object `dReduce1_1`, we finally performed a 'join' between the newly created object and `dGammaPiu`; the result was then converted into a `JavaRDD` of strings and stripped of the information regarding the cardinality of &Gamma;<sup>+</sup>(u). In this way, we obtained an object whose generic element is of the form (u, v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...).
+**Reduce 1**: We used the interface `Card.java` on the output of the previous step: this counts the number of comma-separated terms within the value of each key and then divides that number by 2. In this way, we obtained the pair `JavaPairRDD<String, Integer>` where the key is the node and the value is the cardinality of the corresponding set &Gamma;<sup>+</sup>(u). Then, with a `filter` operation, we selected only the pairs whose cardinality was greater than or equal to 2, and we saved this object in the variable `dReduce1_0`. To obtain the output of *Reduce 1*, which we stored in the object `dReduce1_1`, we finally performed a `join` between the newly created object and `dGammaPiu`; the result was then converted into a `JavaRDD` of strings and stripped of the information regarding the cardinality of &Gamma;<sup>+</sup>(u). In this way, we obtained an object whose generic element is of the form (u, v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...).
 
 **ROUND 2**
 
 **Map 2**: For the first input, we used the output of *Map 1* and created the `JavaPairRDD` `dMap2_0`, where the key is the edge and the value is the symbol "$". For the second input, we used the interface `Map2.java`. Since we retained the information about the degrees of the nodes belonging to &Gamma;<sup>+</sup>(u), we were able to compare them. To do this, we implemented two `for` loops:
--The first starts from i=2 and is incremented at each iteration to scan through the even-numbered positions in the tuple's value. In this way, we selected the degrees of each node, as they are located to the right of each node's label.
+-The first starts from i=2 and is incremented at each iteration to scan through the even-numbered positions in the tuple`s value. In this way, we selected the degrees of each node, as they are located to the right of each node`s label.
 -The second starts from j=i+2 and proceeds in the same manner.
 
-We then saved in the object 'dMap2_1' all pairs of nodes from &Gamma;<sup>+</sup>(u) — obtained by shifting the current positions in the `for` loops by one unit — that satisfied the condition x<sub>i</sub> &pr; x<sub>j</sub>. Thus, we obtained the output required by Map 2, namely (x<sub>i</sub>, x<sub>j</sub>; u).
+We then saved in the object `dMap2_1` all pairs of nodes from &Gamma;<sup>+</sup>(u) — obtained by shifting the current positions in the `for` loops by one unit — that satisfied the condition x<sub>i</sub> &pr; x<sub>j</sub>. Thus, we obtained the output required by Map 2, namely (x<sub>i</sub>, x<sub>j</sub>; u).
   
-**Reduce 2**: We created the object 'dReduce2_0' using a 'reduceByKey', through which we selected all the pairs from the previous step that shared the same key, aggregating their values. Next, we performed a 'join' between the newly created object and the first output of *Map 2*, contained in the object `dMap2_0`, resulting in the `JavaPairRDD` 'dReduce2_1'. In this way, we selected the elements of &Gamma;<sup>+</sup>(u) that were connected by an edge.
+**Reduce 2**: We created the object `dReduce2_0` using a `reduceByKey`, through which we selected all the pairs from the previous step that shared the same key, aggregating their values. Next, we performed a `join` between the newly created object and the first output of *Map 2*, contained in the object `dMap2_0`, resulting in the `JavaPairRDD` `dReduce2_1`. In this way, we selected the elements of &Gamma;<sup>+</sup>(u) that were connected by an edge.
 
 **ROUND 3** 
 
-**Map 3**: We used the interface 'Map3.java' on 'dReduce2_1': for each node present in the value of the tuple, we generated a new pair where the key is the node and the value is the key of the previous tuple.
+**Map 3**: We used the interface `Map3.java` on `dReduce2_1`: for each node present in the value of the tuple, we generated a new pair where the key is the node and the value is the key of the previous tuple.
 
-**Reduce 3**: By performing a `reduceByKey` on the previously obtained output, we constructed, for each input key, the set containing the edges of G<sup>+</sup>(u). Then, using the interface `Card.java` again, we counted the number of edges contained in each set. Finally, through an additional 'reduceByKey' that summed the values of the tuples aggregated by key, we obtained the total number of triangles present in the graph.
+**Reduce 3**: By performing a `reduceByKey` on the previously obtained output, we constructed, for each input key, the set containing the edges of G<sup>+</sup>(u). Then, using the interface `Card.java` again, we counted the number of edges contained in each set. Finally, through an additional `reduceByKey` that summed the values of the tuples aggregated by key, we obtained the total number of triangles present in the graph.
 
 
 ## Interrogazione del grafo su *Neo4j*
@@ -118,4 +118,4 @@ Referring to the `ContaTriangoli.java` application, we created the graph on *Neo
 * all nodes forming triangles with the reference node
 * triangles counted from the reference node
 	 
-At the same time, we verified the outputs of the Neo4j queries using 'filter' operations with Spark.
+At the same time, we verified the outputs of the Neo4j queries using `filter` operations with Spark.
