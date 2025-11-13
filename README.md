@@ -91,7 +91,7 @@ The algorithm is divided into three Mapreduce rounds
 **Map 1**: Given as input the list of strings containing each edge with the degrees of the corresponding nodes, we used a `filter` operation to select those edges whose in-degree is strictly less than the out-degree. We then saved this object into the `JavaRDD` of strings called `dMap1_0`. Next, with a second `filter` operation, we selected the edges whose in-degree equals the out-degree, and applied another `filter` to retain only those where the in-edge's label is less than the out-edge's label. This result was saved into the `JavaRDD` of strings `dMap1_1`. We then merged the two objects to obtain all edges (u,v) such that u &pr; v. In order to compute &Gamma;<sup>+</sup>(u), we finally performed a `reduceByKey` on the previous output: this returned the `JavaPairRDD` `dGammaPiu`, where each generic key-value pair is of the form (u; v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...), that is, an object with the node as key and the set &Gamma;<sup>+</sup>(u) as value, enriched with the degree information of the nodes it contains. This choice was made to support the implementation of the following steps.
 
 
-**Reduce 1**: We used the interface `Card.java` on the output of the previous step: this counts the number of comma-separated terms within the value of each key and then divides that number by 2. In this way, we obtained the pair `JavaPairRDD<String, Integer>` where the key is the node and the value is the cardinality of the corresponding set &Gamma;<sup>+</sup>(u). Then, with a `filter` operation, we selected only the pairs whose cardinality was greater than or equal to 2, and we saved this object in the variable `dReduce1_0`. To obtain the output of *Reduce 1*, which we stored in the object `dReduce1_1`, we finally performed a 'join' between the newly created object and `dGammaPiu`; the result was then converted into a 'JavaRDD' of strings and stripped of the information regarding the cardinality of &Gamma;<sup>+</sup>(u). In this way, we obtained an object whose generic element is of the form (u, v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...).
+**Reduce 1**: We used the interface `Card.java` on the output of the previous step: this counts the number of comma-separated terms within the value of each key and then divides that number by 2. In this way, we obtained the pair `JavaPairRDD<String, Integer>` where the key is the node and the value is the cardinality of the corresponding set &Gamma;<sup>+</sup>(u). Then, with a `filter` operation, we selected only the pairs whose cardinality was greater than or equal to 2, and we saved this object in the variable `dReduce1_0`. To obtain the output of *Reduce 1*, which we stored in the object `dReduce1_1`, we finally performed a 'join' between the newly created object and `dGammaPiu`; the result was then converted into a `JavaRDD` of strings and stripped of the information regarding the cardinality of &Gamma;<sup>+</sup>(u). In this way, we obtained an object whose generic element is of the form (u, v<sub>1</sub>, d(v<sub>1</sub>), v<sub>2</sub>, d(v<sub>2</sub>), ...).
 
 **ROUND 2**
 
@@ -101,7 +101,7 @@ The algorithm is divided into three Mapreduce rounds
 
 We then saved in the object 'dMap2_1' all pairs of nodes from &Gamma;<sup>+</sup>(u) — obtained by shifting the current positions in the `for` loops by one unit — that satisfied the condition x<sub>i</sub> &pr; x<sub>j</sub>. Thus, we obtained the output required by Map 2, namely (x<sub>i</sub>, x<sub>j</sub>; u).
   
-**Reduce 2**: We created the object 'dReduce2_0' using a 'reduceByKey', through which we selected all the pairs from the previous step that shared the same key, aggregating their values. Next, we performed a 'join' between the newly created object and the first output of Map 2, contained in the object `dMap2_0`, resulting in the `JavaPairRDD` 'dReduce2_1'. In this way, we selected the elements of &Gamma;<sup>+</sup>(u) that were connected by an edge.
+**Reduce 2**: We created the object 'dReduce2_0' using a 'reduceByKey', through which we selected all the pairs from the previous step that shared the same key, aggregating their values. Next, we performed a 'join' between the newly created object and the first output of *Map 2*, contained in the object `dMap2_0`, resulting in the `JavaPairRDD` 'dReduce2_1'. In this way, we selected the elements of &Gamma;<sup>+</sup>(u) that were connected by an edge.
 
 **ROUND 3** 
 
@@ -112,20 +112,10 @@ We then saved in the object 'dMap2_1' all pairs of nodes from &Gamma;<sup>+</sup
 
 ## Interrogazione del grafo su *Neo4j*
 
-Referring to the 'ContaTriangoli.java' application, we created the graph on Neo4j in the same way it was initially built for the `ContaTriangoli_NeoSpark.java` application. By connecting to Neo4j and focusing on a specific test node, we executed queries that displayed the following elements retrieved by the algorithm:
+Referring to the `ContaTriangoli.java` application, we created the graph on *Neo4j* in the same way it was initially built for the `ContaTriangoli_NeoSpark.java` application. By connecting to *Neo4j* and focusing on a specific test node, we executed queries that displayed the following elements retrieved by the algorithm:
 * the degree of the node and the set of nodes connected to it
 * the set &Gamma;<sup>+</sup>(u) for the reference node
 * all nodes forming triangles with the reference node
 * triangles counted from the reference node
 	 
 At the same time, we verified the outputs of the Neo4j queries using 'filter' operations with Spark.
-
-Let me know if you'd like to continue with the next section or compile everything into a cohesive document!
-
-the dots of the enumeration
-Got it! Here's the corrected English translation with bullet points using dots (•) instead of asterisks, as you requested:
-
-Referring to the 'ContaTriangoli.java' application, we created the graph on Neo4j in the same way it was initially built for the 'ContaTriangoli_NeoSpark.java' application. By connecting to Neo4j and focusing on a specific test node, we executed queries that displayed the following elements retrieved by the algorithm: • the degree of the node and the set of nodes connected to it • the set &Gamma;<sup>+</sup>(u) for the reference node • all nodes forming triangles with the reference node • triangles counted from the reference node
-
-At the same time, we verified the outputs of the *Neo4j* queries using 'filter' operations with *Spark*.
-		
